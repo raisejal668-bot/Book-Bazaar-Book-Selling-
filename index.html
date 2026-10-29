@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Bazaar - Academic & Book Exchange Hub</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="top-bar">
+      <div class="logo" onclick="switchTab('store')">
+        <i class="fa-solid fa-book-open-reader"></i>
+        <span>Book Bazaar</span>
+      </div>
+      
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search by title, author, course, or semester..." onkeyup="handleSearch()">
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+
+      <div class="user-actions">
+        <div id="authContainer">
+          <button class="btn btn-outline" onclick="openModal('authModal')"><i class="fa-solid fa-user"></i> Login / Register</button>
+        </div>
+        
+        <div class="nav-icon" onclick="switchTab('wishlist')">
+          <i class="fa-solid fa-heart"></i>
+          <span class="badge" id="wishlistCount">0</span>
+        </div>
+
+        <div class="nav-icon" onclick="switchTab('cart')">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge" id="cartCount">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Links -->
+    <nav class="nav-links">
+      <a href="#" class="active" onclick="switchTab('store', this)"><i class="fa-solid fa-store"></i> Bookstore</a>
+      <a href="#" onclick="switchTab('semester', this)"><i class="fa-solid fa-graduation-cap"></i> Semester Books</a>
+      <a href="#" onclick="switchTab('exchange', this)"><i class="fa-solid fa-arrow-right-arrow-left"></i> Book Exchange</a>
+      <a href="#" onclick="switchTab('study-tools', this)"><i class="fa-solid fa-pen-ruler"></i> Study Tools</a>
+      <a href="#" onclick="switchTab('quiz', this)"><i class="fa-solid fa-circle-question"></i> Quiz Zone</a>
+      <a href="#" onclick="switchTab('orders', this)" id="ordersNav" style="display:none;"><i class="fa-solid fa-box"></i> My Orders</a>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Store Section -->
+    <section id="storeSection" class="tab-content active">
+      <div class="banner">
+        <h2>Find Your Next Great Read or Academic Guide</h2>
+        <p>Buy, sell, exchange semester books, practice quizzes, and prepare for exams in one place!</p>
+      </div>
+
+      <div class="section-header">
+        <h3><i class="fa-solid fa-fire"></i> Featured & Popular Books</h3>
+        <div class="filter-group">
+          <select id="categoryFilter" onchange="filterCategory()">
+            <option value="all">All Categories</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Mechanical">Mechanical</option>
+            <option value="Fiction">Fiction</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="book-grid" id="bookGrid"></div>
+    </section>
+
+    <!-- Semester Books Section -->
+    <section id="semesterSection" class="tab-content">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-graduation-cap"></i> Semester Specific Books</h3>
+        <p>Filter books tailored to your academic semester and major.</p>
+      </div>
+
+      <div class="semester-filters">
+        <select id="semesterSelect" onchange="filterSemesterBooks()">
+          <option value="all">All Semesters</option>
+          <option value="Semester 1">Semester 1</option>
+          <option value="Semester 2">Semester 2</option>
+          <option value="Semester 3">Semester 3</option>
+          <option value="Semester 4">Semester 4</option>
+          <option value="Semester 5">Semester 5</option>
+          <option value="Semester 6">Semester 6</option>
+        </select>
+
+        <select id="branchSelect" onchange="filterSemesterBooks()">
+          <option value="all">All Branches</option>
+          <option value="CSE">Computer Science</option>
+          <option value="ECE">Electronics</option>
+          <option value="ME">Mechanical</option>
+        </select>
+      </div>
+
+      <div class="book-grid" id="semesterBookGrid"></div>
+    </section>
+
+    <!-- Book Exchange Section -->
+    <section id="exchangeSection" class="tab-content">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> Peer-to-Peer Book Exchange</h3>
+        <button class="btn btn-primary" onclick="openModal('listExchangeModal')"><i class="fa-solid fa-plus"></i> Post a Book for Exchange</button>
+      </div>
+
+      <p class="subtitle">Swap your used books with fellow students directly.</p>
+
+      <div class="exchange-grid" id="exchangeGrid"></div>
+    </section>
+
+    <!-- Study Tools Section -->
+    <section id="study-toolsSection" class="tab-content">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-pen-ruler"></i> Student Productivity Tools</h3>
+      </div>
+
+      <div class="tools-layout">
+        <!-- Pomodoro Timer -->
+        <div class="tool-card">
+          <h4><i class="fa-solid fa-stopwatch"></i> Pomodoro Study Timer</h4>
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="timer-controls">
+            <button class="btn btn-primary" onclick="startTimer()">Start</button>
+            <button class="btn btn-outline" onclick="pauseTimer()">Pause</button>
+            <button class="btn btn-outline" onclick="resetTimer()">Reset</button>
+          </div>
+        </div>
+
+        <!-- Quick Notes -->
+        <div class="tool-card">
+          <h4><i class="fa-solid fa-note-sticky"></i> Quick Study Notes</h4>
+          <textarea id="noteInput" placeholder="Jot down quick formulas, reminders, or study points..."></textarea>
+          <button class="btn btn-primary" onclick="saveNote()" style="margin-top: 10px;">Save Note</button>
+          <ul id="notesList" class="notes-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz Zone Section -->
+    <section id="quizSection" class="tab-content">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-circle-question"></i> Academic Quiz Zone</h3>
+      </div>
+
+      <div class="quiz-card" id="quizContainer">
+        <div id="quizHeader">
+          <h4 id="quizQuestion">Click Start Quiz to test your knowledge!</h4>
+        </div>
+        <div id="quizOptions" class="quiz-options"></div>
+        <button class="btn btn-primary" id="quizBtn" onclick="startQuiz()">Start Quiz</button>
+        <div id="quizResult" class="quiz-result"></div>
+      </div>
+    </section>
+
+    <!-- Wishlist Section -->
+    <section id="wishlistSection" class="tab-content">
+      <h3><i class="fa-solid fa-heart"></i> My Wishlist</h3>
+      <div class="book-grid" id="wishlistGrid"></div>
+    </section>
+
+    <!-- Cart & Checkout Section -->
+    <section id="cartSection" class="tab-content">
+      <h3><i class="fa-solid fa-cart-shopping"></i> Shopping Cart</h3>
+      <div class="cart-layout">
+        <div class="cart-items" id="cartItems"></div>
+
+        <div class="cart-summary">
+          <h4>Order Summary</h4>
+          <div class="summary-line"><span>Subtotal</span> <span id="cartSubtotal">$0.00</span></div>
+          <div class="summary-line"><span>Shipping</span> <span>Free</span></div>
+          <hr>
+          <div class="summary-line total"><span>Total</span> <span id="cartTotal">$0.00</span></div>
+          <button class="btn btn-primary btn-block" onclick="proceedToCheckout()"><i class="fa-solid fa-credit-card"></i> Proceed to Checkout</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkout Modal / View -->
+    <section id="checkoutSection" class="tab-content">
+      <h3><i class="fa-solid fa-credit-card"></i> Checkout</h3>
+      <form id="checkoutForm" onsubmit="handleCheckout(event)">
+        <div class="form-grid">
+          <div>
+            <h4>Shipping Address</h4>
+            <div class="form-group"><label>Full Name</label><input type="text" id="shipName" required></div>
+            <div class="form-group"><label>Address</label><input type="text" id="shipAddress" required></div>
+            <div class="form-group"><label>City</label><input type="text" id="shipCity" required></div>
+          </div>
+          <div>
+            <h4>Payment Method</h4>
+            <div class="form-group">
+              <label><input type="radio" name="payment" value="card" checked> Credit/Debit Card</label><br>
+              <label><input type="radio" name="payment" value="cod"> Cash on Delivery</label>
+            </div>
+            <div class="form-group"><label>Card Number</label><input type="text" placeholder="xxxx-xxxx-xxxx-xxxx"></div>
+            <button type="submit" class="btn btn-primary btn-block">Place Order</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Orders Section -->
+    <section id="ordersSection" class="tab-content">
+      <h3><i class="fa-solid fa-box"></i> My Orders</h3>
+      <div id="ordersList"></div>
+    </section>
+
+  </main>
+
+  <!-- AI Assistant Chat Floating Button & Window -->
+  <div class="ai-widget">
+    <button class="ai-toggle" onclick="toggleAIChat()">
+      <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <div class="ai-chat-window" id="aiChatWindow">
+      <div class="ai-chat-header">
+        <span><i class="fa-solid fa-robot"></i> Book Bazaar AI Assistant</span>
+        <i class="fa-solid fa-xmark" onclick="toggleAIChat()" style="cursor:pointer;"></i>
+      </div>
+      <div class="ai-messages" id="aiMessages">
+        <div class="ai-msg bot">Hello! I am your AI study and book assistant. Ask me for book recommendations, summary help, or study tips!</div>
+      </div>
+      <div class="ai-input-area">
+        <input type="text" id="aiInput" placeholder="Ask AI something..." onkeypress="handleAIPress(event)">
+        <button onclick="sendAIMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authentication Modal -->
+  <div class="modal" id="authModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('authModal')">&times;</span>
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">Login</button>
+        <button class="auth-tab-btn" id="registerTabBtn" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" required></div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+        <div class="form-group"><label>Full Name</label><input type="text" id="regName" required></div>
+        <div class="form-group"><label>Email</label><input type="email" id="regEmail" required></div>
+        <div class="form-group"><label>Password</label><input type="password" id="regPassword" required></div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- List Book for Exchange Modal -->
+  <div class="modal" id="listExchangeModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('listExchangeModal')">&times;</span>
+      <h3>Post a Book for Exchange</h3>
+      <form onsubmit="handlePostExchange(event)">
+        <div class="form-group"><label>Book Title</label><input type="text" id="exTitle" required></div>
+        <div class="form-group"><label>Author</label><input type="text" id="exAuthor" required></div>
+        <div class="form-group"><label>Condition</label>
+          <select id="exCondition">
+            <option value="Like New">Like New</option>
+            <option value="Good">Good</option>
+            <option value="Fair">Fair</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Book You Want in Return</label><input type="text" id="exWant" required></div>
+        <button type="submit" class="btn btn-primary btn-block">Post Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
